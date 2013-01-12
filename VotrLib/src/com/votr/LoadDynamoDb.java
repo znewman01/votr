@@ -11,7 +11,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.dynamodb.AmazonDynamoDBClient;
-import com.amazonaws.services.dynamodb.model.AttributeValue;
+import com.amazonaws.services.dynamodb.model.*;
 import com.amazonaws.services.dynamodb.model.PutItemRequest;
 
 public class LoadDynamoDb {
@@ -41,7 +41,7 @@ public class LoadDynamoDb {
         client.setEndpoint("https://dynamodb.us-west-1.amazonaws.com");
     }
 
-    public static void addVote(Vote vote)
+    public static int addVote(Vote vote)
     {
     	try
     	{
@@ -57,15 +57,31 @@ public class LoadDynamoDb {
 	     	item.put("state", new AttributeValue().withS(vote.state)); 
 	     	item.put("city", new AttributeValue().withS(vote.city)); 
 	
-	         
-	     	PutItemRequest itemRequest = new PutItemRequest().withTableName(tableName).withItem(item);
-	         client.putItem(itemRequest);
-	         item.clear();
+	          
+	     	Map<String, ExpectedAttributeValue> itemCheck = new HashMap<String, ExpectedAttributeValue>();
+	     	itemCheck.put("voter_id", new ExpectedAttributeValue().withExists(false));
+
+	     	
+	     	PutItemRequest itemRequest = new PutItemRequest().withTableName(tableName).withItem(item).withExpected(itemCheck);
+		     
+	     	try {
+	     	 client.putItem(itemRequest);
+	     	}
+	     	catch (ConditionalCheckFailedException e) {
+	     		return 1;
+	     	}
+	     	finally {
+	     		item.clear();
+	     	}
+
+     		return 0;
+	     	
 	    	}
     	
     	catch (AmazonServiceException ase) {
             System.err.println("Failed to create item in " + tableName);
-            System.out.println(ase); 
+            System.out.println(ase);
+            return -1;
         } 
     }
     
