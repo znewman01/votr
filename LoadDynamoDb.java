@@ -24,9 +24,6 @@ public class LoadDynamoDb {
         try {
 
             uploadSampleVotes(tableName);
-//            uploadSampleForums(forumTableName);
-//            uploadSampleThreads(threadTableName);
-//            uploadSampleReplies(replyTableName);
 
         } catch (AmazonServiceException ase) {
             System.err.println("Data load script failed.");
@@ -46,7 +43,6 @@ public class LoadDynamoDb {
     	try
     	{
     		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-    
 
      	item.put("voter_id", new AttributeValue().withS(vote.voter_id)); 
      	item.put("poll_id", new AttributeValue().withS(vote.poll_id)); 
@@ -72,29 +68,7 @@ public class LoadDynamoDb {
         	Vote vote1 = new Vote("4153423422", "2012_prez_us", "1", tags1 ); 
 
         	addVote(vote1); 
-//     	
-        	
-//        	Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-//        	item.put("voter_id", new AttributeValue().withS("4087688027")); 
-//        	item.put("poll_id", new AttributeValue().withS("2012_prez_us")); 
-//        	item.put("choice", new AttributeValue().withN("2")); 
-//        	item.put("tags", new AttributeValue().withSS(Arrays.asList("guncontrol", "healthcare")));
-//            
-//            PutItemRequest itemRequest = new PutItemRequest().withTableName(tableName).withItem(item);
-//            client.putItem(itemRequest);
-//            item.clear();
-//           
-//
-//        	item.put("voter_id", new AttributeValue().withS(vote1.voter_id)); 
-//        	item.put("poll_id", new AttributeValue().withS(vote1.poll_id)); 
-//        	item.put("choice", new AttributeValue().withN(vote1.choice)); 
-//        	item.put("tags", new AttributeValue().withSS(vote1.tags));
-//            
-//            itemRequest = new PutItemRequest().withTableName(tableName).withItem(item);
-//            client.putItem(itemRequest);
-//            item.clear();
-      
-                
+             
         }   catch (AmazonServiceException ase) {
             System.err.println("Failed to create item in " + tableName);
             System.out.println(ase); 
