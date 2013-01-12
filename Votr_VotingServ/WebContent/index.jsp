@@ -7,7 +7,7 @@ CloudSearchUploadQueue.init();
 java.util.logging.Logger logger = java.util.logging.Logger.getLogger("");
 java.util.Enumeration paramNames = request.getParameterNames();
 
-String pollId = "2012_prez_vote"; //Should be in some configuration file
+String pollId = "cats"; //Should be in some configuration file
 String voterId = request.getParameterValues("From")[0];
 String voterCity = request.getParameterValues("FromCity")[0];
 String voterState = request.getParameterValues("FromState")[0];

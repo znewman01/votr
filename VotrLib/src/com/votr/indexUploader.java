@@ -40,7 +40,7 @@ public class indexUploader {
 		indexUploader uploader = new indexUploader();
 
 		uploader.loadTable();
-		uploader.search("2012_prez_us", null);
+		uploader.search("cats", null);
 
 	}
 

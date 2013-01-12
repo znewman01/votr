@@ -91,7 +91,7 @@ public class LoadDynamoDb {
         	Collection<String> tags1 = new HashSet<String>(); 
         	tags1.add("cheezburgers");
         	tags1.add("catnip"); 
-        	Vote vote1 = new Vote("4153423422", "2012_prez_us", "1", "Seattle", "WA", "98119", tags1 ); 
+        	Vote vote1 = new Vote("4153423422", "cats", "1", "Seattle", "WA", "98119", tags1 ); 
 
         	addVote(vote1); 
              
