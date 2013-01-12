@@ -1,5 +1,3 @@
-package com.votr;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,7 +23,6 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.dynamodb.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodb.model.AttributeValue;
@@ -39,38 +36,27 @@ public class indexUploader {
 	
 	public static void main(String[] args){
 		indexUploader uploader = new indexUploader();
-		//uploader.loadTable();
 		
-		uploader.search();
+		uploader.loadTable();
+		uploader.search("2012_prez_us", null);
 		
 	}
 	
-	public void search() {
+	
+	public Result search(String poll_id, String candidate) {
 		try {
-			//URI uri = URIUtils.createURI("http", "search-test-xnrvb2xw2rc2iq76porynyunqy.us-east-1.cloudsearch.amazonaws.com", 80, "/2011-02-01/search",
-			//		URLEncoder.encode("bq=(-voter_id:'*')","UTF-8"), null);
-		// todo:add facets
-		// &facet=zipcode_count,city_count,choice_count,state_count,tags_count
-			//System.out.println(uri);
+			String bq;
+			if (candidate == null)
+				bq = "bq=poll_id:'" + poll_id + "'";
+			else
+				bq = "bq=(poll_id:'" + poll_id + "'"+ "+choice:'"+ candidate + "')";
 			
 			String uri = "http://search-test-xnrvb2xw2rc2iq76porynyunqy.us-east-1.cloudsearch.amazonaws.com/2011-02-01/search?" +
-					"bq=(not%20voter_id:'1')" +
+					bq +
 					"&facet=zipcode_count,city_count,choice_count,state_count,tags_count";
+			System.out.println(uri);
 			
 			HttpGet get = new HttpGet(uri);
-			//HttpGet get = new HttpGet(uri.toString().replaceAll("\\+", "%20"));
-
-			/*
-			get.addHeader(new BasicHeader("Host", "doc-test-xnrvb2xw2rc2iq76porynyunqy.us-east-1.cloudsearch.amazonaws.com"));
-			get.addHeader(new BasicHeader("Accept", "application/json"));
-			
-			try {
-				get.setURI(new URI("http://search-test-xnrvb2xw2rc2iq76porynyunqy.us-east-1.cloudsearch.amazonaws.com/2011-02-01/search/?q=star+wars"));
-			} catch (URISyntaxException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			*/
 	
 		    ObjectMapper mapper = new ObjectMapper();
 		    String json ="";
@@ -79,19 +65,14 @@ public class indexUploader {
 	        BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 	        String line = "";
 		    while ((line = rd.readLine()) != null) {
-		          System.out.println("line= " + line);
 		          json = line;
 		    }
 		    
+		    return  new Result(mapper.readTree(json));
 		    
-		    // todo: convert JSON object to Vote object
-		    JsonNode node = mapper.readTree(json);
-		    System.out.println(node.findValues("tags_count").get(0));
-		        
 		    } catch (Exception e) {
-		    	e.printStackTrace();
+		    	throw new RuntimeException(e);
 		    }
-		
 	}
 	
 	public void loadTable() {
@@ -118,14 +99,13 @@ public class indexUploader {
 	
     private AmazonDynamoDBClient createClient() {
         AWSCredentials credentials;
-		//try {
-		//	credentials = new PropertiesCredentials(
-		//	        LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
-		//} catch (IOException e) {
-	    	credentials = new BasicAWSCredentials("",
-	    			""); // I AM A BAD PERSON FOR DOING THIS
-	 
-		//}
+		try {
+			credentials = new PropertiesCredentials(
+			        LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
+		}
 
         AmazonDynamoDBClient dynamoDB = new AmazonDynamoDBClient(credentials);
         dynamoDB.setEndpoint("https://dynamodb.us-west-1.amazonaws.com");
