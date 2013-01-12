@@ -56,7 +56,57 @@ public class DataSimulator {
 	private Vote getRandomVote()
 	{
 		String choice = Integer.toString(randomGen.nextInt(this.numChoice)+1);
-		Vote vote = new Vote(this.getRandomVoterID(), this.poll_ID, choice, this.getRandomTags());
+		Vote vote;
+		int i = randomGen.nextInt(10);
+		String city = "West Lafayette";
+		String state = "IN";
+		String zipcode = "47906";
+		switch (i)
+		{
+			case 0:
+				city = "New York"; state = "NY"; zipcode = "10001";
+				break;
+			case 1:
+				city = "New York"; state = "NY"; zipcode = "10001";
+				break;
+			case 2:
+				city = "New York"; state = "NY"; zipcode = "10001";
+				break;
+			case 3:
+				city = "Chicago"; state = "IL"; zipcode = "60601";
+				break;
+			case 4:
+				city = "Chicago"; state = "IL"; zipcode = "60601";
+				break;
+			case 5:
+				city = "Chicago"; state = "IL"; zipcode = "60601";
+				break;
+			case 6:
+				city = "Los Angeles"; state = "CA"; zipcode = "90001";
+				break;
+			case 7:
+				city = "Los Angeles"; state = "CA"; zipcode = "90001";
+				break;
+			case 8:
+				city = "Houston"; state = "TX"; zipcode = "77001";
+				break;
+			case 9:
+				city = "Philadelphia"; state = "PA"; zipcode = "19019";
+				break;
+			default :
+				
+				break;
+		}
+		
+		if (randomGen.nextInt(2)%2==0)
+		{
+			vote = new Vote(this.getRandomVoterID(), this.poll_ID, choice, city, state, zipcode, this.getRandomTags());
+		}
+		else
+		{
+			vote = new Vote(this.getRandomVoterID(), this.poll_ID, "2", city, state, zipcode,  this.getRandomTags());				
+		}
+		
 		return vote;
 	}
 	
