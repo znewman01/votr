@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+ 
+<p id="lat"></p>
+<p id="long"></p>
+ 
+<script>
+
+var lat; 
+
+    $(function() {
+        $.get("http://where.yahooapis.com/geocode?q=West+Lafayette,+IN&appid=kCoOMT3V34G408wlKjlYt7frL6Od1fX2M7sSzPYlRdi5c0EFB0otY6f0ghD5e1Jz5LGaEA6ExrMprcq4y5trdq4w3WkZLPo-", function(responseXml) {
+            var xml = $(responseXml);
+            var lat = $("latitude", xml).text();
+            var long = $("longitude", xml).text();
+            $( "#lat" ).append(lat);
+            $( "#long" ).append(long);
+
+            
+        });
+    });
+    
+</script>
+ 
+</body>
+</html>
