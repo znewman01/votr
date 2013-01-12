@@ -38,6 +38,7 @@ public class LoadDynamoDb {
         //        LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
     	AWSCredentials credentials = new BasicAWSCredentials("",
     			""); // I AM A BAD PERSON FOR DOING THIS
+    	//Key censored
     	
         client = new AmazonDynamoDBClient(credentials);
         client.setEndpoint("https://dynamodb.us-west-1.amazonaws.com");
@@ -53,7 +54,10 @@ public class LoadDynamoDb {
      	item.put("poll_id", new AttributeValue().withS(vote.poll_id)); 
      	item.put("choice", new AttributeValue().withN(vote.choice)); 
      	item.put("tags", new AttributeValue().withSS(vote.tags));
-         
+     	item.put("city", new AttributeValue().withS(vote.voter_city)); 
+     	item.put("state", new AttributeValue().withS(vote.voter_state)); 
+     	item.put("zipcode", new AttributeValue().withS(vote.voter_zip)); 
+     	
      	PutItemRequest itemRequest = new PutItemRequest().withTableName(tableName).withItem(item);
          client.putItem(itemRequest);
          item.clear();
@@ -70,7 +74,7 @@ public class LoadDynamoDb {
         	Collection<String> tags1 = new HashSet<String>(); 
         	tags1.add("cheezburgers");
         	tags1.add("catnip"); 
-        	Vote vote1 = new Vote("4153423422", "2012_prez_us", "1", tags1 ); 
+        	Vote vote1 = new Vote("4153423422", "2012_prez_us", "1", tags1 , "New York", "NY", "10000"); 
 
         	addVote(vote1); 
              

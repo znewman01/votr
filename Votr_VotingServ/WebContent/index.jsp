@@ -5,7 +5,7 @@
 java.util.logging.Logger logger = java.util.logging.Logger.getLogger("");
 java.util.Enumeration paramNames = request.getParameterNames();
 
-String pollId = "2012 General Election"; //Should be in some configuration file
+String pollId = "2012_prez_vote"; //Should be in some configuration file
 String voterId = request.getParameterValues("From")[0];
 String voterCity = request.getParameterValues("FromCity")[0];
 String voterState = request.getParameterValues("FromState")[0];
@@ -28,11 +28,13 @@ if (!voterCountry.equals("US")) {
 	logger.setLevel(java.util.logging.Level.INFO);
 	logger.warning("Voter " + voterId + " is not from the US.");
 	out.println("<Sms>Error: Voter not from the U.S.</Sms>");
+// } else if (voterId.replaceAll("\\d+","").length() > 0) {
+//	out.println("<Sms>Error: Your choice must be an integer number.</Sms>");
 } else {
-	Vote vote = new Vote(voterId, pollId, choice, tags);
+	Vote vote = new Vote(voterId, pollId, choice, tags, voterCity, voterState,voterZip);
 	LoadDynamoDb.createClient();
 	LoadDynamoDb.addVote(vote);
-	out.println("<Sms>Voted successfully for " + choice + " </Sms>");
+	out.println("<Sms>Voted successfully for " + choice + "</Sms>");
 }
 %>
 
