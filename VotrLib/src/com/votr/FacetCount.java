@@ -1,3 +1,4 @@
+package com.votr;
 
 public class FacetCount {
 	public final String value;

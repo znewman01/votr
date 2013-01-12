@@ -1,3 +1,5 @@
+package com.votr;
+
 import java.util.Collection;
 
 public class Vote
