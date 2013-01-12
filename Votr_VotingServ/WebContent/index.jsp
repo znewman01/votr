@@ -3,26 +3,35 @@
 <%
 java.util.logging.Logger logger = java.util.logging.Logger.getLogger("");
 java.util.Enumeration paramNames = request.getParameterNames();
-while(paramNames.hasMoreElements()) {
-  String paramName = (String)paramNames.nextElement();
-  String buf = "";
-  buf = buf + paramName + ": ";
-  String[] paramValues = request.getParameterValues(paramName);
-  if (paramValues.length == 1) {
-    String paramValue = paramValues[0];
-    if (paramValue.length() == 0)
-      buf = buf + "No Value";
-    else
-      buf = buf + paramValue.toString();
-  } else {
-    for(int i=0; i<paramValues.length; i++) {
-      buf = buf + paramValues[i].toString() + ",";
-    }
-  }
-  logger.setLevel(java.util.logging.Level.INFO);
-  logger.info(buf);
-  //out.println("</Sms>");
+
+String pollId = "2012 General Election"; //Should be in some configuration file
+String voterId = request.getParameterValues("From")[0];
+String voterCity = request.getParameterValues("FromCity")[0];
+String voterState = request.getParameterValues("FromState")[0];
+String voterZip = request.getParameterValues("FromZip")[0];
+String voterCountry = request.getParameterValues("FromCountry")[0];
+
+String body = request.getParameterValues("Body")[0];
+java.util.List<String> bodyValues = java.util.Arrays.asList(body.split(" "));
+java.util.Iterator<String> iterator = bodyValues.iterator();
+String choice = iterator.toString();
+
+java.util.Collection<String> tags;
+tags.clear();
+
+while (iterator.hasNext()) {
+	tags.add(iterator.next());
 }
 
+if (voterCountry!="US") {
+	logger.setLevel(java.util.logging.Level.INFO);
+	logger.warning("Voter " + voterId + " is not from the US.");
+	out.println("<Sms>Error: Voter not from the U.S.</Sms>");
+} else {
+	Vote vote = new Vote(voterId, pollId, choice, tags);
+	LoadDynamoDb.addVote(vote);
+	out.println("<Sms>Voted successfully for " + choice + " </Sms>");
+}
 %>
+
 </Response>
