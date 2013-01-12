@@ -54,9 +54,9 @@ public class LoadDynamoDb {
      	item.put("poll_id", new AttributeValue().withS(vote.poll_id)); 
      	item.put("choice", new AttributeValue().withN(vote.choice)); 
      	item.put("tags", new AttributeValue().withSS(vote.tags));
-     	item.put("city", new AttributeValue().withS(vote.voter_city)); 
-     	item.put("state", new AttributeValue().withS(vote.voter_state)); 
-     	item.put("zipcode", new AttributeValue().withS(vote.voter_zip)); 
+     	item.put("city", new AttributeValue().withS(vote.city)); 
+     	item.put("state", new AttributeValue().withS(vote.state)); 
+     	item.put("zipcode", new AttributeValue().withS(vote.zipcode)); 
      	
      	PutItemRequest itemRequest = new PutItemRequest().withTableName(tableName).withItem(item);
          client.putItem(itemRequest);
@@ -74,7 +74,7 @@ public class LoadDynamoDb {
         	Collection<String> tags1 = new HashSet<String>(); 
         	tags1.add("cheezburgers");
         	tags1.add("catnip"); 
-        	Vote vote1 = new Vote("4153423422", "2012_prez_us", "1", tags1 , "New York", "NY", "10000"); 
+        	Vote vote1 = new Vote("4153423422", "2012_prez_us", "1", "New York", "NY", "10000", tags1); 
 
         	addVote(vote1); 
              
