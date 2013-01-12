@@ -103,16 +103,14 @@ public class indexUploader {
 
 	private AmazonDynamoDBClient createClient() {
 		AWSCredentials credentials;
-		//try {
-			// credentials = new PropertiesCredentials(
-			// LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
-			credentials = new BasicAWSCredentials("",
-					"");
-			// my mother raised me better than this
-		//} catch (IOException e) {
-		//	// TODO Auto-generated catch block
-		//	throw new RuntimeException(e);
-		//}
+		try {
+			credentials = new PropertiesCredentials(
+					LoadDynamoDb.class
+							.getResourceAsStream("AwsCredentials.properties"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
+		}
 
 		AmazonDynamoDBClient dynamoDB = new AmazonDynamoDBClient(credentials);
 		dynamoDB.setEndpoint("https://dynamodb.us-west-1.amazonaws.com");
@@ -162,8 +160,12 @@ public class indexUploader {
 						: vote.zipcode);
 				fields.put("zipcode_count", (vote.zipcode == null) ? ""
 						: vote.zipcode);
-				fields.put("tags", (vote.tags == null || vote.tags.size() == 0) ? "" : vote.tags);
-				fields.put("tags_count", (vote.tags == null || vote.tags.size() == 0) ? "" : vote.tags);
+				fields.put("tags",
+						(vote.tags == null || vote.tags.size() == 0) ? ""
+								: vote.tags);
+				fields.put("tags_count",
+						(vote.tags == null || vote.tags.size() == 0) ? ""
+								: vote.tags);
 
 				doc.put("fields", fields);
 				docs.add(doc);

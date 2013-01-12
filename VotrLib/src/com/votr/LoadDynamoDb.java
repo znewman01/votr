@@ -34,10 +34,8 @@ public class LoadDynamoDb {
     }
     
     public static void createClient() throws Exception {
-        //AWSCredentials credentials = new PropertiesCredentials(
-        //        LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
-    	AWSCredentials credentials = new BasicAWSCredentials("",
-				""); // I AM SORRY
+        AWSCredentials credentials = new PropertiesCredentials(
+                LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
     	
         client = new AmazonDynamoDBClient(credentials);
         client.setEndpoint("https://dynamodb.us-west-1.amazonaws.com");
