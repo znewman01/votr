@@ -76,9 +76,22 @@
 	    
 	}
 	
-	add_vote('West Lafayette, IN');
+	function onSuccess(result, status, xhr) {
+	    clean_vote();
+	    
+	    //var obj = jQuery.parseJSON(result);
+	    for(var i in result.) {
+		if (i != null) {
+		    add_vote(i);
+		}
+	    }
+	    replot();
+	}
 	
-	setInterval(replot, 10000);
+	add_vote('West Lafayette, a N');
+	
+	setInterval($.ajax({url:???,success:onSuccess}), 10000);
+	
      </script>
   </head>
 
