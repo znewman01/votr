@@ -1,0 +1,25 @@
+import java.util.HashSet;
+
+public class Vote
+{
+
+	private String voter_ID; 
+
+	private String poll_ID; 
+
+	private HashSet<String> tags; 
+	
+	private int choice;
+
+	public Vote(String voter_ID, String poll_ID, int choice)
+	{
+		this.voter_ID = voter_ID;
+		this.poll_ID = poll_ID;
+		this.choice = choice;
+	}
+	
+	public void add_tag(String tag)
+	{
+		this.tags.add(tag);
+	}
+}

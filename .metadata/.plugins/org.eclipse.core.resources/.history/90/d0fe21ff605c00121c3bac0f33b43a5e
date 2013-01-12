@@ -1,0 +1,97 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+
+
+public class DataSimulator {
+	private int totalEntry;
+	private int entryPerSec;
+	private int timeSpan; // in seconds
+	private String poll_ID;
+	private int numChoice;
+	private HashSet<String> topics;
+	private ArrayList<String> areacode;
+	
+	private void initTopics()
+	{
+		topics = new HashSet<String>();
+		topics.add("guncontrol");
+		topics.add("medicare");
+		topics.add("babyeating");
+		topics.add("cheezeburger");
+		topics.add("litterboxcleanup");
+		topics.add("catniplegalization");
+		topics.add("ceilingcat");		
+	}	
+	
+	private String getRandomVoterID()
+	{
+		return "";
+	}
+	/*
+	private Vote getRandomVote()
+	{
+		
+		Vote vote; // = new Vote();
+		return vote;
+	}
+	*/
+	public DataSimulator(int totalEntry, int timeSpan, String poll_ID, int numChoice)
+	{
+		this.totalEntry = totalEntry;
+		this.timeSpan = timeSpan;
+		this.entryPerSec = totalEntry/timeSpan;
+		this.poll_ID = poll_ID;
+		this.numChoice = numChoice;
+		initTopics();
+		
+		this.areacode = new ArrayList<String>();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("/home/formatjam/votr/DataSimulator/src/areacode.dat"));
+			String str;
+			while ((str = br.readLine())!=null)
+			{
+				areacode.add(str);			
+			}
+		} catch (Exception e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void generateRecords()
+	{
+		long currTime = System.currentTimeMillis();
+		long nextTime = currTime + 1000;
+		while (totalEntry>0)
+		{
+			int limit = this.entryPerSec;
+			System.out.println(currTime);
+			while(currTime<nextTime)
+			{
+				if (limit>0)
+				{
+					totalEntry--;
+					limit--;
+					//create a vote and add it into the database
+				}
+				currTime = System.currentTimeMillis();
+			}	
+			currTime = System.currentTimeMillis();
+			nextTime = currTime + 1000;
+		}
+		
+		System.out.println(currTime);
+	}
+	
+	public static void main(String[] args) 
+	{
+		DataSimulator ds = new DataSimulator(1000000, 30, "2012_prez_us", 2);
+		ds.generateRecords();
+	}	
+}

@@ -1,0 +1,13 @@
+
+public class DataSimulator {
+	private int totalEntry;
+	private int entryPerSize;
+	private int timeSpan; // in minutes
+	private String poll_ID;
+	private int numChoice;
+	
+	public DataSimulator()
+	{
+		
+	}
+}
