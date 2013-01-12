@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-<%@ page import="com.votr.Vote,com.votr.LoadDynamoDb" %>
+<%@ page import="com.votr.Vote,com.votr.LoadDynamoDb,com.votr.CloudSearchUploadQueue" %>
 <%
+CloudSearchUploadQueue.init();
+
 java.util.logging.Logger logger = java.util.logging.Logger.getLogger("");
 java.util.Enumeration paramNames = request.getParameterNames();
 
@@ -31,9 +33,10 @@ if (!voterCountry.equals("US")) {
 // } else if (voterId.replaceAll("\\d+","").length() > 0) {
 //	out.println("<Sms>Error: Your choice must be an integer number.</Sms>");
 } else {
-	Vote vote = new Vote(voterId, pollId, choice, tags, voterCity, voterState,voterZip);
+	Vote vote = new Vote(voterId, pollId, choice, voterCity, voterState,voterZip,tags);
 	LoadDynamoDb.createClient();
 	LoadDynamoDb.addVote(vote);
+	CloudSearchUploadQueue.singleQueue.enqueue(vote);
 	out.println("<Sms>Voted successfully for " + choice + "</Sms>");
 }
 %>

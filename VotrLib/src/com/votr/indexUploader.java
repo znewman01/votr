@@ -25,6 +25,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.dynamodb.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodb.model.AttributeValue;
@@ -117,13 +118,14 @@ public class indexUploader {
 	
     private AmazonDynamoDBClient createClient() {
         AWSCredentials credentials;
-		try {
-			credentials = new PropertiesCredentials(
-			        LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			throw new RuntimeException(e);
-		}
+		//try {
+		//	credentials = new PropertiesCredentials(
+		//	        LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
+		//} catch (IOException e) {
+	    	credentials = new BasicAWSCredentials("",
+	    			""); // I AM A BAD PERSON FOR DOING THIS
+	 
+		//}
 
         AmazonDynamoDBClient dynamoDB = new AmazonDynamoDBClient(credentials);
         dynamoDB.setEndpoint("https://dynamodb.us-west-1.amazonaws.com");
