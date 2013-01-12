@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
+<%@ page import="com.votr.Vote,com.votr.LoadDynamoDb" %>
 <%
 java.util.logging.Logger logger = java.util.logging.Logger.getLogger("");
 java.util.Enumeration paramNames = request.getParameterNames();
@@ -14,21 +15,22 @@ String voterCountry = request.getParameterValues("FromCountry")[0];
 String body = request.getParameterValues("Body")[0];
 java.util.List<String> bodyValues = java.util.Arrays.asList(body.split(" "));
 java.util.Iterator<String> iterator = bodyValues.iterator();
-String choice = iterator.toString();
+String choice = iterator.next().toString();
 
-java.util.Collection<String> tags;
+java.util.Collection<String> tags = new java.util.ArrayList<String>();
 tags.clear();
 
 while (iterator.hasNext()) {
 	tags.add(iterator.next());
 }
 
-if (voterCountry!="US") {
+if (!voterCountry.equals("US")) {
 	logger.setLevel(java.util.logging.Level.INFO);
 	logger.warning("Voter " + voterId + " is not from the US.");
 	out.println("<Sms>Error: Voter not from the U.S.</Sms>");
 } else {
 	Vote vote = new Vote(voterId, pollId, choice, tags);
+	LoadDynamoDb.createClient();
 	LoadDynamoDb.addVote(vote);
 	out.println("<Sms>Voted successfully for " + choice + " </Sms>");
 }
