@@ -35,9 +35,15 @@ if (!voterCountry.equals("US")) {
 } else {
 	Vote vote = new Vote(voterId, pollId, choice, voterCity, voterState,voterZip,tags);
 	LoadDynamoDb.createClient();
-	LoadDynamoDb.addVote(vote);
-	CloudSearchUploadQueue.singleQueue.enqueue(vote);
-	out.println("<Sms>Voted successfully for " + choice + "</Sms>");
+	int ret = LoadDynamoDb.addVote(vote);
+	if (ret==0) {
+		out.println("<Sms>Voted successfully for " + choice + ".</Sms>");
+		CloudSearchUploadQueue.singleQueue.enqueue(vote);
+	} else if (ret==1) {
+		out.println("<Sms>You have voted. Sorry.</Sms>");
+	} else if (ret==-1) {
+		out.println("<Sms>System Error.</Sms>");
+	}
 }
 %>
 

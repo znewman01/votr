@@ -11,7 +11,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.dynamodb.AmazonDynamoDBClient;
-import com.amazonaws.services.dynamodb.model.AttributeValue;
+import com.amazonaws.services.dynamodb.model.*;
 import com.amazonaws.services.dynamodb.model.PutItemRequest;
 
 public class LoadDynamoDb {
@@ -34,47 +34,64 @@ public class LoadDynamoDb {
     }
     
     public static void createClient() throws Exception {
-        //AWSCredentials credentials = new PropertiesCredentials(
-        //        LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
-    	AWSCredentials credentials = new BasicAWSCredentials("",
-    			""); // I AM A BAD PERSON FOR DOING THIS
-    	//Key censored
+        AWSCredentials credentials = new PropertiesCredentials(
+                LoadDynamoDb.class.getResourceAsStream("AwsCredentials.properties"));
     	
         client = new AmazonDynamoDBClient(credentials);
         client.setEndpoint("https://dynamodb.us-west-1.amazonaws.com");
     }
 
-    public static void addVote(Vote vote)
+    public static int addVote(Vote vote)
     {
     	try
     	{
     		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
 
-     	item.put("voter_id", new AttributeValue().withS(vote.voter_id)); 
-     	item.put("poll_id", new AttributeValue().withS(vote.poll_id)); 
-     	item.put("choice", new AttributeValue().withN(vote.choice)); 
-     	item.put("tags", new AttributeValue().withSS(vote.tags));
-     	item.put("city", new AttributeValue().withS(vote.city)); 
-     	item.put("state", new AttributeValue().withS(vote.state)); 
-     	item.put("zipcode", new AttributeValue().withS(vote.zipcode)); 
-     	
-     	PutItemRequest itemRequest = new PutItemRequest().withTableName(tableName).withItem(item);
-         client.putItem(itemRequest);
-         item.clear();
-    	}
+	     	item.put("voter_id", new AttributeValue().withS(vote.voter_id)); 
+	     	item.put("poll_id", new AttributeValue().withS(vote.poll_id)); 
+	     	item.put("choice", new AttributeValue().withN(vote.choice)); 
+	     	if (vote.tags.size() != 0) {
+	     		item.put("tags", new AttributeValue().withSS(vote.tags));
+	     	}
+	     	item.put("zipcode", new AttributeValue().withS(vote.zipcode)); 
+	     	item.put("state", new AttributeValue().withS(vote.state)); 
+	     	item.put("city", new AttributeValue().withS(vote.city)); 
+	
+	          
+	     	Map<String, ExpectedAttributeValue> itemCheck = new HashMap<String, ExpectedAttributeValue>();
+	     	itemCheck.put("voter_id", new ExpectedAttributeValue().withExists(false));
+
+	     	
+	     	PutItemRequest itemRequest = new PutItemRequest().withTableName(tableName).withItem(item).withExpected(itemCheck);
+		     
+	     	try {
+	     	 client.putItem(itemRequest);
+	     	}
+	     	catch (ConditionalCheckFailedException e) {
+	     		return 1;
+	     	}
+	     	finally {
+	     		item.clear();
+	     	}
+
+     		return 0;
+	     	
+	    	}
     	
     	catch (AmazonServiceException ase) {
             System.err.println("Failed to create item in " + tableName);
-            System.out.println(ase); 
+            System.out.println(ase);
+            return -1;
         } 
     }
+    
     private static void uploadSampleVotes(String tableName) {
         
         try {
         	Collection<String> tags1 = new HashSet<String>(); 
         	tags1.add("cheezburgers");
         	tags1.add("catnip"); 
-        	Vote vote1 = new Vote("4153423422", "2012_prez_us", "1", "New York", "NY", "10000", tags1); 
+        	Vote vote1 = new Vote("4153423422", "2012_prez_us", "1", "Seattle", "WA", "98119", tags1 ); 
 
         	addVote(vote1); 
              
